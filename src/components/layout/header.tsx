@@ -2,11 +2,10 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Car, Menu, User } from 'lucide-react';
+import { Car, Menu} from 'lucide-react';
 import {
   Sheet,
   SheetContent,
-
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -90,9 +89,6 @@ export default function Header() {
             {/* Can add a search bar here if needed */}
           </div>
           <nav className="flex items-center">
-            <Button variant="ghost" size="icon" aria-label="User Profile">
-              <User className="h-5 w-5" />
-            </Button>
             <ThemeChangerButton />
           </nav>
         </div>

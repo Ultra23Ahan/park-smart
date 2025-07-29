@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { addDays, format } from 'date-fns';
-import { useEffect } from 'react';
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
@@ -72,11 +71,11 @@ const firebaseConfig = {
   messagingSenderId: '223267819038',
   appId: '1:223267819038:web:23e0efd75b6328cf33e80f',
   measurementId: 'G-GY2HJ6837G',
-};
+} as const;
 
-let app;
 if (typeof window !== 'undefined' && !getApps().length) {
-  app = initializeApp(firebaseConfig);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const app = initializeApp(firebaseConfig);
 }
 const db = typeof window !== 'undefined' ? getFirestore() : null;
 
@@ -111,6 +110,7 @@ export default function PreBookPage() {
             'There was an error saving your booking. Please try again.',
           variant: 'destructive',
         });
+        console.error(error);
       }
     } else {
       toast({
