@@ -112,9 +112,6 @@ export default function Home() {
                       className="bg-primary/90 hover:bg-primary">
                       <Link href="/pre-book">Pre-Book Now</Link>
                     </Button>
-                    <Button asChild size="lg" variant="outline">
-                      <Link href="/admin">Check Parking Availability</Link>
-                    </Button>
                   </div>
                 </div>
               </motion.div>
