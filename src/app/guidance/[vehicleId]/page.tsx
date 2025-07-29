@@ -9,11 +9,11 @@ import {
 import { Clock, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
 
-export default async function GuidancePage({
-  params,
-}: {
-  params: { vehicleId: string };
-}) {
+type PageProps = {
+  params: Promise<{ vehicleId: string }>;
+};
+
+export default async function Page({ params }: PageProps) {
   const { vehicleId } = await params;
 
   return (
@@ -41,12 +41,11 @@ export default async function GuidancePage({
                 data-ai-hint="parking lot map"
                 width={800}
                 height={450}
-                className='object-cover'
+                className="object-cover"
               />
               <svg
                 className="absolute inset-0 w-full h-full"
                 viewBox="0 0 800 450">
-                {/* User location dot */}
                 <circle
                   cx="100"
                   cy="400"
@@ -63,8 +62,6 @@ export default async function GuidancePage({
                   opacity="0.3"
                   className="animate-ping"
                 />
-
-                {/* Path */}
                 <path
                   d="M 100 400 Q 150 200, 400 220 T 650 100"
                   stroke="hsl(var(--primary))"
@@ -80,8 +77,6 @@ export default async function GuidancePage({
                     repeatCount="indefinite"
                   />
                 </path>
-
-                {/* Assigned Spot */}
                 <rect
                   x="620"
                   y="70"

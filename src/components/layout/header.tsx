@@ -18,7 +18,6 @@ import { cn } from '@/lib/utils';
 const navLinks = [
   { href: '/pre-book', label: 'Pre-Book' },
   { href: '/dashboard', label: 'Dashboard' },
-  { href: '/admin', label: 'Admin Panel' },
 ];
 
 export default function Header() {

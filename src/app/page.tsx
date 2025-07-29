@@ -74,7 +74,14 @@ export default function Home() {
                 transition={{ duration: 0.8 }}
                 className="grid gap-6 lg:grid-cols-1 lg:gap-12 xl:grid-cols-1">
                 <div className="flex flex-col justify-center space-y-4">
-
+                  <div className="flex flex-row items-center justify-center w-fit mx-auto gap-1">
+                    {/* <div className="bg-primary/35 w-16 h-16 p-2 rounded-full flex items-center justify-center"> */}
+                      <Car className="mx-auto h-14 w-14 text-primary" />
+                    {/* </div> */}
+                    <p className="text-4xl font-bold tracking-tight mt-1">
+                      ParkSmart
+                    </p>
+                  </div>
                   <div className="space-y-2">
                     <ColourfulText
                       text="Smart"
@@ -97,7 +104,7 @@ export default function Home() {
                       everything in one place.
                     </p>
                   </div>
-                  
+
                   <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center">
                     <Button
                       asChild
@@ -177,8 +184,8 @@ export default function Home() {
                     Why ParkSmart?
                   </h2>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    We&apos;re not just parking cars, we&apos;re building smarter, more
-                    efficient cities.
+                    We&apos;re not just parking cars, we&apos;re building
+                    smarter, more efficient cities.
                   </p>
                 </div>
               </div>

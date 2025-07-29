@@ -41,14 +41,13 @@ const nftTags = [
 
 export default function DashboardPage() {
   return (
-    <div className="w-screen py-12">
+    <div className="w-screen p-12">
       <h1 className="text-3xl font-bold mb-8">User Dashboard</h1>
       <Tabs defaultValue="bookings" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
+        <TabsList className="grid w-full grid-cols-3 h-auto">
           <TabsTrigger value="bookings">My Bookings</TabsTrigger>
           <TabsTrigger value="payments">Payment History</TabsTrigger>
           <TabsTrigger value="vehicles">Manage Vehicles</TabsTrigger>
-          <TabsTrigger value="nft">NFT Tag Status</TabsTrigger>
         </TabsList>
 
         <TabsContent value="bookings" className="mt-6">
@@ -146,39 +145,6 @@ export default function DashboardPage() {
                   {vehicle.default && <Badge>Default</Badge>}
                 </Card>
               ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="nft" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>NFT Tag Status</CardTitle>
-              <CardDescription>Check the status of your linked NFT parking tags.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Tag ID</TableHead>
-                            <TableHead>Linked Vehicle</TableHead>
-                            <TableHead>Status</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {nftTags.map((tag) => (
-                        <TableRow key={tag.id}>
-                            <TableCell className="font-mono">{tag.id}</TableCell>
-                            <TableCell>{tag.vehicle}</TableCell>
-                            <TableCell>
-                                <Badge variant={tag.status === 'Active' ? 'default' : 'destructive'} className={tag.status === 'Active' ? 'bg-accent hover:bg-accent/80' : ''}>
-                                    {tag.status}
-                                </Badge>
-                            </TableCell>
-                        </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
             </CardContent>
           </Card>
         </TabsContent>

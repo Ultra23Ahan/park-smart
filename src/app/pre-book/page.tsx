@@ -66,7 +66,7 @@ export default function PreBookPage() {
   }
 
   return (
-    <div className="container py-12 md:py-24">
+    <div className="w-screen py-12 md:py-24">
       <div className="mx-auto max-w-4xl">
         <Card className="bg-card/80 backdrop-blur-sm">
           <CardHeader>
