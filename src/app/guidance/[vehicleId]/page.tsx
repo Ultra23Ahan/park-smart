@@ -7,7 +7,7 @@ export default function GuidancePage({ params }: { params: { vehicleId: string }
   const { vehicleId } = params;
 
   return (
-    <div className="container py-12">
+    <div className="w-screen py-12">
       <div className="max-w-4xl mx-auto">
         <Card className="overflow-hidden bg-card/80 backdrop-blur-sm">
           <CardHeader>

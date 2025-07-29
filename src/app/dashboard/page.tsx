@@ -42,7 +42,7 @@ const nftTags = [
 
 export default function DashboardPage() {
   return (
-    <div className="container py-12">
+    <div className="w-screen py-12">
       <h1 className="text-3xl font-bold mb-8">User Dashboard</h1>
       <Tabs defaultValue="bookings" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
