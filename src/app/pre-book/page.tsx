@@ -1,12 +1,15 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { addDays, format } from "date-fns";
+import * as React from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { addDays, format } from 'date-fns';
+import { useEffect } from 'react';
+import { initializeApp, getApps } from 'firebase/app';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -14,35 +17,68 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Slider } from "@/components/ui/slider";
-import { cn } from "@/lib/utils";
-import { Calendar as CalendarIcon, IndianRupee } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/select';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Slider } from '@/components/ui/slider';
+import { cn } from '@/lib/utils';
+import { Calendar as CalendarIcon, IndianRupee } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const bookingFormSchema = z.object({
-  vehicleNumber: z.string().min(4, "Vehicle number must be at least 4 characters."),
-  location: z.string({ required_error: "Please select a parking location." }),
-  date: z.date({ required_error: "A date for booking is required." }),
+  vehicleNumber: z
+    .string()
+    .min(4, 'Vehicle number must be at least 4 characters.'),
+  location: z.string({ required_error: 'Please select a parking location.' }),
+  date: z.date({ required_error: 'A date for booking is required.' }),
   duration: z.number().min(1).max(12),
 });
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
-const defaultValues: Partial<BookingFormValues> = {
+const defaultValues: BookingFormValues = {
+  vehicleNumber: '',
+  location: '',
+  date: new Date(),
   duration: 2,
 };
+
+// Firebase config from .env.local
+const firebaseConfig = {
+  apiKey:
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY,
+  authDomain: 'npse-f7de0.firebaseapp.com',
+  projectId: 'npse-f7de0',
+  storageBucket: 'npse-f7de0.firebasestorage.app',
+  messagingSenderId: '223267819038',
+  appId: '1:223267819038:web:23e0efd75b6328cf33e80f',
+  measurementId: 'G-GY2HJ6837G',
+};
+
+let app;
+if (typeof window !== 'undefined' && !getApps().length) {
+  app = initializeApp(firebaseConfig);
+}
+const db = typeof window !== 'undefined' ? getFirestore() : null;
 
 export default function PreBookPage() {
   const { toast } = useToast();
@@ -53,16 +89,36 @@ export default function PreBookPage() {
   const [duration, setDuration] = React.useState(defaultValues.duration || 2);
   const pricePerHour = 50;
 
-  function onSubmit(data: BookingFormValues) {
-    toast({
-      title: "Booking Successful!",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      variant: "default",
-    });
+  async function onSubmit(data: BookingFormValues) {
+    if (db) {
+      try {
+        await addDoc(collection(db, 'bookings'), data);
+        toast({
+          title: 'Booking Successful!',
+          description: (
+            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+              <code className="text-white">
+                {JSON.stringify(data, null, 2)}
+              </code>
+            </pre>
+          ),
+          variant: 'default',
+        });
+      } catch (error) {
+        toast({
+          title: 'Booking Failed',
+          description:
+            'There was an error saving your booking. Please try again.',
+          variant: 'destructive',
+        });
+      }
+    } else {
+      toast({
+        title: 'Booking Failed',
+        description: 'Firestore is not initialized.',
+        variant: 'destructive',
+      });
+    }
   }
 
   return (
@@ -70,13 +126,19 @@ export default function PreBookPage() {
       <div className="mx-auto max-w-4xl">
         <Card className="bg-card/80 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold tracking-tight">Pre-Book Your Spot</CardTitle>
-            <CardDescription>Fill in the details below to secure your parking slot.</CardDescription>
+            <CardTitle className="text-3xl font-bold tracking-tight">
+              Pre-Book Your Spot
+            </CardTitle>
+            <CardDescription>
+              Fill in the details below to secure your parking slot.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-8">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-8">
                   <FormField
                     control={form.control}
                     name="vehicleNumber"
@@ -96,16 +158,24 @@ export default function PreBookPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Location</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select a parking lot" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="lot-a">Downtown Parking Lot A</SelectItem>
-                            <SelectItem value="lot-b">Uptown Shopping Mall</SelectItem>
-                            <SelectItem value="lot-c">Airport Parking Complex</SelectItem>
+                            <SelectItem value="lot-a">
+                              Downtown Parking Lot A
+                            </SelectItem>
+                            <SelectItem value="lot-b">
+                              Uptown Shopping Mall
+                            </SelectItem>
+                            <SelectItem value="lot-c">
+                              Airport Parking Complex
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -122,14 +192,13 @@ export default function PreBookPage() {
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
-                                variant={"outline"}
+                                variant={'outline'}
                                 className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
+                                  'w-full pl-3 text-left font-normal',
+                                  !field.value && 'text-accent'
+                                )}>
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, 'PPP')
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
@@ -143,7 +212,9 @@ export default function PreBookPage() {
                               selected={field.value}
                               onSelect={field.onChange}
                               disabled={(date) =>
-                                date < new Date(new Date().setHours(0,0,0,0)) || date > addDays(new Date(), 30)
+                                date <
+                                  new Date(new Date().setHours(0, 0, 0, 0)) ||
+                                date > addDays(new Date(), 30)
                               }
                               initialFocus
                             />
@@ -175,20 +246,30 @@ export default function PreBookPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full" size="lg">Book Now</Button>
+                  <Button type="submit" className="w-full" size="lg">
+                    Book Now
+                  </Button>
                 </form>
               </Form>
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">Live Availability</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Live Availability
+                  </h3>
                   <div className="p-4 rounded-lg bg-muted/50">
-                    <p className="text-accent font-bold text-xl">17 Slots Available</p>
-                    <p className="text-sm text-muted-foreground">In your selected location.</p>
+                    <p className="text-accent font-bold text-xl">
+                      17 Slots Available
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      In your selected location.
+                    </p>
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">Booking Summary</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Booking Summary
+                  </h3>
                   <Card>
                     <CardContent className="p-6 space-y-4">
                       <div className="flex justify-between items-center">
@@ -196,12 +277,20 @@ export default function PreBookPage() {
                         <span>{duration} Hours</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Price / Hour</span>
-                        <span><IndianRupee className="inline h-4 w-4" /> {pricePerHour.toFixed(2)}</span>
+                        <span className="text-muted-foreground">
+                          Price / Hour
+                        </span>
+                        <span>
+                          <IndianRupee className="inline h-4 w-4" />{' '}
+                          {pricePerHour.toFixed(2)}
+                        </span>
                       </div>
                       <div className="border-t pt-4 flex justify-between items-center font-bold text-lg">
                         <span>Total Cost</span>
-                        <span className="text-primary"><IndianRupee className="inline h-5 w-5" /> {(duration * pricePerHour).toFixed(2)}</span>
+                        <span className="text-primary">
+                          <IndianRupee className="inline h-5 w-5" />{' '}
+                          {(duration * pricePerHour).toFixed(2)}
+                        </span>
                       </div>
                     </CardContent>
                   </Card>

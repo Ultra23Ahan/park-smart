@@ -34,10 +34,6 @@ const vehicles = [
     { number: "DL 3C XY 5678", nickname: "Work SUV", default: false },
 ]
 
-const nftTags = [
-    { id: "NFT-A1B2", vehicle: "MH 12 AB 1234", status: "Active" },
-    { id: "NFT-C3D4", vehicle: "DL 3C XY 5678", status: "Active" },
-]
 
 export default function DashboardPage() {
   return (
