@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Car, Clock, Nfc, MapPin, ShieldCheck, Zap, Leaf } from 'lucide-react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import React from 'react';
 import Image from 'next/image';
 import ColourfulText from '@/components/ui/colourful-text';
@@ -177,7 +177,7 @@ export default function Home() {
                     Why ParkSmart?
                   </h2>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    We're not just parking cars, we're building smarter, more
+                    We&apos;re not just parking cars, we&apos;re building smarter, more
                     efficient cities.
                   </p>
                 </div>

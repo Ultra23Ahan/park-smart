@@ -16,7 +16,7 @@ const ThemeChangerButton = () => {
   if (!mounted) {
     return null;
   }
-  const isDark: Boolean = theme === 'dark';
+  const isDark: boolean = theme === 'dark';
 
   return (
     <>

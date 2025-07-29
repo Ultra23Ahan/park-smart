@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -17,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Car, Clock, Download, IndianRupee, MapPin, PlusCircle } from "lucide-react";
+import { Download, IndianRupee, PlusCircle } from "lucide-react";
 
 const bookings = [
     { id: "BK001", location: "Downtown Lot A", date: "2024-08-15 10:00", duration: "2h", status: "Upcoming", vehicle: "MH 12 AB 1234" },

@@ -6,7 +6,7 @@ import { Car, Menu, User } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
+
   SheetHeader,
   SheetTitle,
   SheetTrigger,

@@ -28,7 +28,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-import { Calendar as CalendarIcon, Car, Clock, IndianRupee, MapPin } from "lucide-react";
+import { Calendar as CalendarIcon, IndianRupee } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const bookingFormSchema = z.object({
