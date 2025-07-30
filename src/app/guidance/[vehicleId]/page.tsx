@@ -28,7 +28,7 @@ export default async function Page({ params }: PageProps) {
               </span>
             </CardTitle>
             <CardDescription>
-              Your assigned parking spot is{' '}
+              Your assigned parking spot is
               <span className="text-accent font-bold">A-07</span>. Follow the
               highlighted route.
             </CardDescription>
@@ -36,7 +36,7 @@ export default async function Page({ params }: PageProps) {
           <CardContent>
             <div className="w-full aspect-video rounded-lg overflow-hidden relative border bg-muted">
               <Image
-                src="https://placehold.co/800x450.png"
+                src="https://placehold.co/800x450.png?text=Map"
                 alt="Parking Lot Map"
                 data-ai-hint="parking lot map"
                 width={800}

@@ -1,6 +1,6 @@
 'use client';
-
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -46,10 +46,17 @@ import { useToast } from '@/hooks/use-toast';
 const bookingFormSchema = z.object({
   vehicleNumber: z
     .string()
-    .min(4, 'Vehicle number must be at least 4 characters.'),
+    .regex(
+      /^([A-Z][A-Z]) ([0-9][0-9]) ([A-Z][A-Z]) ([0-9][0-9][0-9][0-9])$|^([0-9][0-9]) BH ([0-9][0-9][0-9][0-9]) ([ABCDEFGHJKLMNPQRSTUVWXYZ][ABCDEFGHJKLMNPQRSTUVWXYZ])$/,
+      'Sorry, please enter a valid vehicle plate number and try again.'
+    ),
   location: z.string({ required_error: 'Please select a parking location.' }),
   date: z.date({ required_error: 'A date for booking is required.' }),
   duration: z.number().min(1).max(12),
+  phoneNumber: z.coerce
+    .number()
+    .min(0, 'Please enter a valid phone number.')
+    .max(9999999999, 'Please enter a valid phone number.'),
 });
 
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
@@ -59,6 +66,7 @@ const defaultValues: BookingFormValues = {
   location: '',
   date: new Date(),
   duration: 2,
+  phoneNumber: 0,
 };
 
 // Firebase config from .env.local
@@ -80,6 +88,7 @@ if (typeof window !== 'undefined' && !getApps().length) {
 const db = typeof window !== 'undefined' ? getFirestore() : null;
 
 export default function PreBookPage() {
+  const router = useRouter();
   const { toast } = useToast();
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
@@ -107,7 +116,7 @@ export default function PreBookPage() {
         toast({
           title: 'Booking Failed',
           description:
-            'There was an error saving your booking. Please try again.',
+            'There was an error saving your booking. Please try again later.',
           variant: 'destructive',
         });
         console.error(error);
@@ -115,7 +124,7 @@ export default function PreBookPage() {
     } else {
       toast({
         title: 'Booking Failed',
-        description: 'Firestore is not initialized.',
+        description: 'Firestore not initialized.',
         variant: 'destructive',
       });
     }
@@ -224,7 +233,19 @@ export default function PreBookPage() {
                       </FormItem>
                     )}
                   />
-
+                  <FormField
+                    control={form.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <Input placeholder="9354752015" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="duration"
@@ -246,23 +267,26 @@ export default function PreBookPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full" size="lg">
+
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    size="lg"
+                    onClick={() => {
+                      router.push(
+                        `/guidance/${form.getValues('phoneNumber').toString()}`
+                      );
+                    }}>
                     Book Now
                   </Button>
                 </form>
               </Form>
-
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    Live Availability
-                  </h3>
                   <div className="p-4 rounded-lg bg-muted/50">
-                    <p className="text-accent font-bold text-xl">
-                      17 Slots Available
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      In your selected location.
+                    <p className="text-xl font-semibold mb-1">Note:</p>
+                    <p className="text-xl">
+                      Your phone number is your booking ID
                     </p>
                   </div>
                 </div>
